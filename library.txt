@@ -1,2 +1,5 @@
 react-icons
 tiptap/starter-kit
+tiptap/extension-underline 
+classnames
+tailwindcss/typography
