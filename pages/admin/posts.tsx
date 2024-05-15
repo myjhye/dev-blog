@@ -1,9 +1,9 @@
 import AdminLayout from "@/components/layout/AdminLayout";
 
-export default function Admin() {
+export default function Posts() {
     return (
         <AdminLayout>
-            <p>admin</p>
+            <p>posts</p>
         </AdminLayout>
     )
 }
