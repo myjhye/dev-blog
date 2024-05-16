@@ -1,4 +1,4 @@
-import { MouseEventHandler, ReactNode, useCallback } from "react"
+import { MouseEventHandler, ReactNode, useCallback } from "react";
 import classnames from 'classnames';
 
 interface Props {
@@ -14,29 +14,29 @@ export default function Button({
     active,
     disabled,
     onMouseDown,
-    onClick
+    onClick,
 }: Props) {
 
     const getActiveStyle = useCallback((): string => {
         if (active) {
             return "dark:bg-primary dark:text-primary-dark bg-primary-dark text-primary";
-        }
-        else {
+        } else {
             return "text-secondary-light bg-secondary-dark";
         }
     }, [active]);
-
-    const commonClasses = "p-2 rounded text-lg hover:scale-110 hover:shadow-md transition";
 
     return (
         <button
             type="button"
             onMouseDown={onMouseDown}
             onClick={onClick}
-            className={classnames(commonClasses, getActiveStyle())}
+            className={classnames(
+                "p-2 rounded text-lg hover:scale-110 hover:shadow-md transition",
+                getActiveStyle()
+            )}
             disabled={disabled}
         >
             {children}
         </button>
-    )
+    );
 }
