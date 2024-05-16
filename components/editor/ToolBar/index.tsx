@@ -6,6 +6,8 @@ import { AiFillCaretDown } from "react-icons/ai";
 import { BsBraces, BsCode, BsImageFill, BsLink45Deg, BsListOl, BsListUl, BsTypeBold, BsTypeItalic, BsTypeStrikethrough, BsTypeUnderline, BsYoutube } from "react-icons/bs";
 import Button from "./Button";
 import { RiDoubleQuotesL } from "react-icons/ri";
+import InsertLink from "../Link/InsertLink";
+import { linkOption } from "../Link/LinkForm";
 
 interface Props {
     editor: Editor | null;
@@ -54,6 +56,11 @@ export default function ToolBar({ editor }: Props) {
                 <AiFillCaretDown />
             </div>
         )
+    }
+
+    // 링크 정보 처리 -> 최상위 컴포넌트에서
+    const handleLinkSubmit = (link: linkOption) => {
+        console.log(link);
     }
 
     return (
@@ -116,9 +123,11 @@ export default function ToolBar({ editor }: Props) {
                 >
                     <BsBraces />
                 </Button>
-                <Button>
-                    <BsLink45Deg />
-                </Button>
+                
+                {/* 링크 정보 처리 -> 최상위 컴포넌트 */}
+                {/* 링크 */}
+                <InsertLink onSubmit={handleLinkSubmit} />
+
                 <Button
                     active={editor.isActive("orderedList")}  
                     onClick={() => editor.chain().focus().toggleOrderedList().run()}
