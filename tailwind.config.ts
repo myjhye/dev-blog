@@ -26,5 +26,7 @@ module.exports = {
       }
     },
   },
-  plugins: [],
+
+  // typography: 텍스트 컨텐츠 스타일링 
+  plugins: [require("@tailwindcss/typography")],
 };
