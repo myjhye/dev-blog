@@ -11,6 +11,15 @@ export default function InsertLink({ onSubmit }: Props) {
 
     const [visible, setVisible] = useState(false);
 
+    const handleSubmit = (link: linkOption) => {
+        if (!link.url.trim()) {
+            return setVisible(false);
+        }
+        onSubmit(link);
+        setVisible(false);
+    }
+
+
     return (
         <div 
             className="relative"
@@ -29,7 +38,7 @@ export default function InsertLink({ onSubmit }: Props) {
                 {/* 부모 컴포넌트(ToolBar)로 링크 정보 전달 -> onSubmit */}
                 <LinkForm 
                     visible={visible}
-                    onSubmit={onSubmit} 
+                    onSubmit={handleSubmit} 
                 />
             </div>
         </div>

@@ -10,6 +10,26 @@ export type linkOption = {
     openInNewTab: boolean;
 }
 
+// 주어진 url을 유효한 url 형식으로 변환
+export const validateUrl = (url: string) => {
+
+    if (!url.trim()) {
+        return ""
+    }
+
+    let finalUrl;
+
+    try {
+        // 입력된 문자열이 유효한 url인지 확인
+        finalUrl = new URL(url).toString();
+    } catch (error) {
+        // 유효하지 않은 경우 'http://'를 추가해 유효한 url로 변환
+        finalUrl = 'http://' + url
+    }
+    // 변환된 최종 url 변환
+    return finalUrl
+}
+
 export default function LinkForm({ visible, onSubmit }: Props) {
 
     const [link, setLink] = useState<linkOption>({
@@ -18,12 +38,22 @@ export default function LinkForm({ visible, onSubmit }: Props) {
     });
 
     const handleSubmit = () => {
-        if (!link.url.trim()) {
-            return;
-        }
-
         // 부모 컴포넌트(InsertLink)로 링크 정보 전달
-        onSubmit(link);
+        onSubmit({
+            ...link,
+            // url만 변환된 값으로 덮어 쓰기
+            url: validateUrl(link.url)
+        });
+        // 폼 초기화
+        resetForm();
+    }
+
+    // 폼 초기화
+    const resetForm = () => {
+        setLink({
+            url: '',
+            openInNewTab: false,
+        });
     }
 
     if (!visible) {
@@ -40,6 +70,7 @@ export default function LinkForm({ visible, onSubmit }: Props) {
                 value={link.url}
                 onChange={({ target }) => setLink({
                     ...link,
+                    // url 속성 업데이트
                     url: target.value,
                 })}
             />
@@ -51,6 +82,7 @@ export default function LinkForm({ visible, onSubmit }: Props) {
                     checked={link.openInNewTab}
                     onChange={({ target }) => setLink({
                         ...link,
+                        // openInNewTab 속성 업데이트
                         openInNewTab: target.checked,
                     })}
                 />
