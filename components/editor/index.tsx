@@ -1,4 +1,4 @@
-// 에디터 전체
+// 에디터 전체 (최상위)
 
 import { EditorContent, useEditor, getMarkRange, Range } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit";
@@ -7,11 +7,14 @@ import Underline from "@tiptap/extension-underline";
 import Placeholder from "@tiptap/extension-placeholder";
 import Link from "@tiptap/extension-link";
 import { useEffect, useState } from "react";
+import EditLink from "./Link/EditLink";
 
 export default function Editor() {
 
+    // 선택된 텍스트 범위
     const [selectionRange, setSelectionRange] = useState<Range>();
 
+    // 에디어 인스턴스
     const editor = useEditor({
         // 에디터 확장 기능
         extensions: [
@@ -64,6 +67,8 @@ export default function Editor() {
 
             {/* 구분선 */}
             <div className="h-[1px] w-full bg-secondary-dark dark:bg-secondary-light my-3" />
+
+            {editor ? <EditLink editor={editor} /> : null}
 
             {/* 본문 */}
             <EditorContent editor={editor} />
