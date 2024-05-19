@@ -1,8 +1,11 @@
-import { useState } from "react";
+// 링크 버튼 내부 - input box, open in new tab, apply 버튼
+
+import { useEffect, useState } from "react";
 
 interface Props {
     visible: boolean;
     onSubmit(link: linkOption): void;
+    initialState?: linkOption;
 }
 
 export type linkOption = {
@@ -30,7 +33,7 @@ export const validateUrl = (url: string) => {
     return finalUrl
 }
 
-export default function LinkForm({ visible, onSubmit }: Props) {
+export default function LinkForm({ visible, onSubmit, initialState }: Props) {
 
     const [link, setLink] = useState<linkOption>({
         url: '',
@@ -54,8 +57,18 @@ export default function LinkForm({ visible, onSubmit }: Props) {
             url: '',
             openInNewTab: false,
         });
-    }
+    };
 
+    // initialState가 변경될 때 link 상태도 그에 맞게 업데이트
+    useEffect(() => {
+        if (initialState) {
+            setLink({
+                ...initialState
+            })
+        }
+    }, [initialState]);
+
+    // visible이 false이면 컴포넌트 렌더링 X
     if (!visible) {
         return null;
     }
