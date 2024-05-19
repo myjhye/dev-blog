@@ -3,7 +3,7 @@
 import DropdownOptions from "@/components/common/DropdownOptions";
 import { Editor } from "@tiptap/react"
 import { AiFillCaretDown } from "react-icons/ai";
-import { BsBraces, BsCode, BsImageFill, BsLink45Deg, BsListOl, BsListUl, BsTypeBold, BsTypeItalic, BsTypeStrikethrough, BsTypeUnderline, BsYoutube } from "react-icons/bs";
+import { BsBraces, BsCode, BsImageFill, BsListOl, BsListUl, BsTypeBold, BsTypeItalic, BsTypeStrikethrough, BsTypeUnderline, BsYoutube } from "react-icons/bs";
 import Button from "./Button";
 import { RiDoubleQuotesL } from "react-icons/ri";
 import InsertLink from "../Link/InsertLink";
@@ -59,8 +59,11 @@ export default function ToolBar({ editor }: Props) {
     }
 
     // 링크 정보 처리 -> 최상위 컴포넌트에서
-    const handleLinkSubmit = (link: linkOption) => {
-        console.log(link);
+    const handleLinkSubmit = ({url, openInNewTab}: linkOption) => {
+        editor.commands.setLink({
+            href: url,
+            target: openInNewTab ? '_blank' : ''
+        })
     }
 
     return (

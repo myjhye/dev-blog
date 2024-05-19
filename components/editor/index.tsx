@@ -1,16 +1,16 @@
 // 에디터 전체
 
-import { EditorContent, useEditor, getMarkRange } from "@tiptap/react"
+import { EditorContent, useEditor, getMarkRange, Range } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit";
 import ToolBar from "./ToolBar";
 import Underline from "@tiptap/extension-underline";
 import Placeholder from "@tiptap/extension-placeholder";
 import Link from "@tiptap/extension-link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Editor() {
 
-    const [selectionRange, setSelectionRange] = useState();
+    const [selectionRange, setSelectionRange] = useState<Range>();
 
     const editor = useEditor({
         // 에디터 확장 기능
@@ -35,14 +35,27 @@ export default function Editor() {
 
         // 에디터 스타일, 레이아웃 지정 -> 텍스트 키우기, 다크모드 지원, 전체 너비/높이 사용
         editorProps: {
+            // 에디터 내부에서 마우스 클릭 이벤트 발생 시 실행 함수
             handleClick(view, pos, event) {
-                const selectionRange = getMarkRange(view.state.doc.resolve(pos), view.state.schema.marks.link);
-            },
+                const selectionRange = getMarkRange(
+                    view.state.doc.resolve(pos), 
+                    view.state.schema.marks.link
+                );
+                if (selectionRange) {
+                    setSelectionRange(selectionRange);
+                }
+            }, 
             attributes: {
                 class: 'prose prose-lg focus:outline-none dark:prose-invert max-w-full mx-auto h-full'
             }
         },
     });
+
+    useEffect(() => {
+        if (editor && selectionRange) {
+            editor.commands.setTextSelection(selectionRange);
+        }
+    }, [editor, selectionRange]);
 
     return (
         <div className="p-3 dark:bg-primary-dark bg-primary transition">
