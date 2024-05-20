@@ -6,6 +6,7 @@ import ToolBar from "./ToolBar";
 import Underline from "@tiptap/extension-underline";
 import Placeholder from "@tiptap/extension-placeholder";
 import Link from "@tiptap/extension-link";
+import Youtube from "@tiptap/extension-youtube";
 import { useEffect, useState } from "react";
 import EditLink from "./Link/EditLink";
 
@@ -14,7 +15,7 @@ export default function Editor() {
     // 선택된 텍스트 범위
     const [selectionRange, setSelectionRange] = useState<Range>();
 
-    // 에디어 인스턴스
+    // 에디터 인스턴스
     const editor = useEditor({
         // 에디터 확장 기능
         extensions: [
@@ -33,6 +34,13 @@ export default function Editor() {
             // 내용 입력 전 문구 
             Placeholder.configure({ 
                 placeholder: "Type something",
+            }),
+            Youtube.configure({
+                width: 840,
+                height: 472.5,
+                HTMLAttributes: {
+                    class: "mx-auto rounded",
+                }
             }),
         ],
 

@@ -8,6 +8,7 @@ import Button from "./Button";
 import { RiDoubleQuotesL } from "react-icons/ri";
 import InsertLink from "../Link/InsertLink";
 import { linkOption } from "../Link/LinkForm";
+import EmbedYoutube from "./EmbedYoutube";
 
 interface Props {
     editor: Editor | null;
@@ -65,6 +66,15 @@ export default function ToolBar({ editor }: Props) {
             target: openInNewTab ? '_blank' : ''
         })
     }
+
+    const handleEmbedYoutube = (url: string) => {
+        editor
+            .chain()
+            .focus()
+            .setYoutubeVideo({ src: url })
+            .run();
+    }
+
 
     return (
         <div className="flex items-center">
@@ -149,9 +159,7 @@ export default function ToolBar({ editor }: Props) {
             <div className="h-4 w-[1px] bg-secondary-dark dark:bg-secondary-light mx-8" />
 
             <div className="flex items-center space-x-3">
-                <Button>
-                    <BsYoutube />
-                </Button>
+                <EmbedYoutube onSubmit={handleEmbedYoutube} />
                 <Button>
                     <BsImageFill />
                 </Button>
