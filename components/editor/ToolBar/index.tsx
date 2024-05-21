@@ -12,9 +12,10 @@ import EmbedYoutube from "./EmbedYoutube";
 
 interface Props {
     editor: Editor | null;
+    onOpenImageClick?(): void;
 }
 
-export default function ToolBar({ editor }: Props) {
+export default function ToolBar({ editor, onOpenImageClick }: Props) {
 
     if (!editor) {
         return null;
@@ -160,7 +161,8 @@ export default function ToolBar({ editor }: Props) {
 
             <div className="flex items-center space-x-3">
                 <EmbedYoutube onSubmit={handleEmbedYoutube} />
-                <Button>
+                
+                <Button onClick={onOpenImageClick}>
                     <BsImageFill />
                 </Button>
             </div>

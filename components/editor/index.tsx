@@ -9,11 +9,14 @@ import Link from "@tiptap/extension-link";
 import Youtube from "@tiptap/extension-youtube";
 import { useEffect, useState } from "react";
 import EditLink from "./Link/EditLink";
+import GalleryModal from "./GalleryModal";
 
 export default function Editor() {
 
     // 선택된 텍스트 범위
     const [selectionRange, setSelectionRange] = useState<Range>();
+
+    const [showGallery, setShowGallery] = useState(false);
 
     // 에디터 인스턴스
     const editor = useEditor({
@@ -69,17 +72,31 @@ export default function Editor() {
     }, [editor, selectionRange]);
 
     return (
-        <div className="p-3 dark:bg-primary-dark bg-primary transition">
-            {/* 툴바 */}
-            <ToolBar editor={editor} />
+        <>
+            <div className="p-3 dark:bg-primary-dark bg-primary transition">
+                {/* 툴바 */}
+                <ToolBar 
+                    editor={editor}
+                    onOpenImageClick={() => setShowGallery(true)} 
+                />
 
-            {/* 구분선 */}
-            <div className="h-[1px] w-full bg-secondary-dark dark:bg-secondary-light my-3" />
+                {/* 구분선 */}
+                <div className="h-[1px] w-full bg-secondary-dark dark:bg-secondary-light my-3" />
 
-            {editor ? <EditLink editor={editor} /> : null}
+                {/* 링크 편집 버튼 3개 - 링크 열기, 링크 편집, 링크 제거 */}
+                {editor 
+                    ? <EditLink editor={editor} /> 
+                    : null
+                }
 
-            {/* 본문 */}
-            <EditorContent editor={editor} />
-        </div>
+                {/* 본문 */}
+                <EditorContent editor={editor} />
+            </div>
+
+            <GalleryModal 
+                visible={showGallery}
+                onClose={() => setShowGallery(false)} 
+            />
+        </>
     )
 }
