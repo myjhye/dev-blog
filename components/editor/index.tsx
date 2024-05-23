@@ -1,6 +1,6 @@
 // 에디터 전체 (최상위)
 
-import { EditorContent, useEditor, getMarkRange, Range } from "@tiptap/react"
+import { EditorContent, useEditor, getMarkRange, Range } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import ToolBar from "./ToolBar";
 import Underline from "@tiptap/extension-underline";
@@ -12,7 +12,6 @@ import EditLink from "./Link/EditLink";
 import GalleryModal from "./GalleryModal";
 
 export default function Editor() {
-
     // 선택된 텍스트 범위
     const [selectionRange, setSelectionRange] = useState<Range>();
 
@@ -95,7 +94,15 @@ export default function Editor() {
 
             <GalleryModal 
                 visible={showGallery}
-                onClose={() => setShowGallery(false)} 
+                onClose={() => setShowGallery(false)}
+                onImageSelect={(file) => {
+                    // Handle the selected image file
+                    console.log("Selected file:", file);
+                }}
+                onSelect={(file) => {
+                    // Handle the final image selection
+                    console.log("Selected image with alt text:", file);
+                }}
             />
         </>
     )
