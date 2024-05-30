@@ -45,8 +45,7 @@ const uploadNewImage: NextApiHandler = (req, res) => {
             });
 
             res.json({ 
-                image: result.secure_url, 
-                url: result.url 
+                src: result.url 
             });
 
         } catch (uploadError) {

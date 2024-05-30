@@ -16,14 +16,40 @@ import axios from "axios";
 export default function Editor() {
     // 선택된 텍스트 범위
     const [selectionRange, setSelectionRange] = useState<Range>();
-
     const [showGallery, setShowGallery] = useState(false);
+    const [uploading, setUploading] = useState(false);
     const [images, setImages] = useState<{ src: string }[]>([]);
 
+    // cloudinary에서 이미지 불러오기
     const fetchImages = async () => {
         const { data } = await axios('/api/image');
         setImages(data.images);
-    }
+    };
+
+    const handleImageUpload = async (image: File) => {
+        setUploading(true);
+        const formData = new FormData();
+        formData.append('image', image);
+        const { data } = await axios.post('/api/image', formData);
+        setUploading(false);
+        
+        setImages([
+            data,
+            ...images,
+        ]);
+    };
+
+    // 이미지 선택 처리 함수
+    const handleImageSelection = (file: { src: string; altText: string }) => {
+        if (editor) {
+            editor.chain().focus().setImage({ 
+                src: file.src, 
+                alt: file.altText 
+            }).run();
+        }
+    };
+
+     
 
 
     // 에디터 인스턴스
@@ -110,20 +136,9 @@ export default function Editor() {
                 visible={showGallery}
                 onClose={() => setShowGallery(false)}
                 images={images}
-                onImageSelect={(file) => {
-                    // Handle the selected image file
-                    console.log("Selected file:", file);
-                }}
-                onSelect={(file) => {
-                    // Handle the final image selection
-                    console.log("Selected image with alt text:", file);
-                    if (editor) {
-                        editor.chain().focus().setImage({ 
-                            src: file.src, 
-                            alt: file.altText 
-                        }).run();
-                    }
-                }}
+                onSelect={handleImageSelection}
+                onFileSelect={handleImageUpload}
+                uploading={uploading}
             />
         </>
     )

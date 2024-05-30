@@ -18,17 +18,19 @@ interface ModalProps {
 };
 
 interface Props extends ModalProps {
-    images: { src: string }[]
-    onImageSelect(image: File): void;
+    images: { src: string }[];
+    uploading?: boolean;
     onSelect(result: ImageSelectionResult): void;
+    onFileSelect(image: File): void;
 };
 
 export default function GalleryModal({ 
     visible,
+    uploading,
     images, 
     onClose, 
-    onImageSelect, 
-    onSelect
+    onSelect,
+    onFileSelect,
 }: Props) {
 
     // 선택된 이미지
@@ -47,7 +49,7 @@ export default function GalleryModal({
             return onClose && onClose();
         }
 
-        onImageSelect(file);
+        onFileSelect(file);
     }
 
     const handleSubmit = () => {
@@ -79,6 +81,7 @@ export default function GalleryModal({
                         <Gallery 
                             images={images}
                             selectedImage={selectedImage || ''}
+                            uploading={uploading}
                             onSelect={handleSelectImage}
                         />
                     </div>
