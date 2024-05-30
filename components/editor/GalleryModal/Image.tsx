@@ -17,8 +17,8 @@ export default function Image({ src, selected, onClick }: Props) {
         >
             <NextImage 
                 src={src}
-                width={200}
-                height={200}
+                width={300}
+                height={300}
                 alt='gallery'
                 objectFit='cover'
                 className='bg-secondary-light'

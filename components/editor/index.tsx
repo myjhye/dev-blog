@@ -7,15 +7,24 @@ import Underline from "@tiptap/extension-underline";
 import Placeholder from "@tiptap/extension-placeholder";
 import Link from "@tiptap/extension-link";
 import Youtube from "@tiptap/extension-youtube";
+import Image from "@tiptap/extension-image"; // Image 확장 추가
 import { useEffect, useState } from "react";
 import EditLink from "./Link/EditLink";
 import GalleryModal from "./GalleryModal";
+import axios from "axios";
 
 export default function Editor() {
     // 선택된 텍스트 범위
     const [selectionRange, setSelectionRange] = useState<Range>();
 
     const [showGallery, setShowGallery] = useState(false);
+    const [images, setImages] = useState<{ src: string }[]>([]);
+
+    const fetchImages = async () => {
+        const { data } = await axios('/api/image');
+        setImages(data.images);
+    }
+
 
     // 에디터 인스턴스
     const editor = useEditor({
@@ -44,6 +53,7 @@ export default function Editor() {
                     class: "mx-auto rounded",
                 }
             }),
+            Image, // Image 확장 추가
         ],
 
         // 에디터 스타일, 레이아웃 지정 -> 텍스트 키우기, 다크모드 지원, 전체 너비/높이 사용
@@ -70,6 +80,10 @@ export default function Editor() {
         }
     }, [editor, selectionRange]);
 
+    useEffect(() => {
+        fetchImages();
+    }, []);
+
     return (
         <>
             <div className="p-3 dark:bg-primary-dark bg-primary transition">
@@ -95,6 +109,7 @@ export default function Editor() {
             <GalleryModal 
                 visible={showGallery}
                 onClose={() => setShowGallery(false)}
+                images={images}
                 onImageSelect={(file) => {
                     // Handle the selected image file
                     console.log("Selected file:", file);
@@ -102,6 +117,12 @@ export default function Editor() {
                 onSelect={(file) => {
                     // Handle the final image selection
                     console.log("Selected image with alt text:", file);
+                    if (editor) {
+                        editor.chain().focus().setImage({ 
+                            src: file.src, 
+                            alt: file.altText 
+                        }).run();
+                    }
                 }}
             />
         </>
