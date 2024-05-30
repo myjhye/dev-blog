@@ -20,41 +20,59 @@ const handler: NextApiHandler = async (req, res) => {
 };
 
 const uploadNewImage: NextApiHandler = (req, res) => {
-    const form = formidable({ multiples: true, keepExtensions: true });
+    
+    const form = formidable({ 
+        multiples: true, 
+        keepExtensions: true 
+    });
 
     form.parse(req, async (err, fields, files) => {
+        
         if (err) {
             console.error("Formidable error:", err);
             return res.status(500).json({ error: err.message });
         }
 
-        console.log("Fields:", fields);
-        console.log("Files:", files);
-
         if (!files.image || !Array.isArray(files.image) || files.image.length === 0) {
-            console.error("Image file is missing or incorrect format");
             return res.status(400).json({ error: "Image file is missing or incorrect format" });
         }
 
         const imageFile = files.image[0] as File;
-        console.log("Image file received:", imageFile);
 
         try {
             const result = await cloudinary.uploader.upload(imageFile.filepath, {
                 folder: "dev-blogs",
             });
 
-            console.log("Cloudinary upload result:", result);
-            res.json({ image: result.secure_url, url: result.url });
+            res.json({ 
+                image: result.secure_url, 
+                url: result.url 
+            });
+
         } catch (uploadError) {
-            console.error("Cloudinary upload error:", (uploadError as Error).message);
             res.status(500).json({ error: (uploadError as Error).message });
         }
     });
 };
 
-const readAllImages: NextApiHandler = (req, res) => {
-    res.status(501).json({ error: "Not implemented" });
+const readAllImages: NextApiHandler = async (req, res) => {
+
+    try {
+        // https://res.cloudinary.com/dynf7v52s/image/upload/v1717075859/dev-blogs/nveow20l9cresufj.png
+        const { resources } = await cloudinary.api.resources({
+            resource_type: 'image',
+            type: 'upload',
+            prefix: "dev-blogs",
+        });
+    
+        const images = resources.map(({ secure_url }: any) => {
+            return { src: secure_url };
+        });
+        res.json({ images });
+
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    };
 };
 
 export default handler;
