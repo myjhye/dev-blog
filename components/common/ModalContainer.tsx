@@ -1,4 +1,4 @@
-// 모달 창
+// 모달 창 (외부 모달)
 
 import { MouseEventHandler, ReactNode, useCallback, useEffect, useId } from "react";
 
