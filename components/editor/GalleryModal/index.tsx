@@ -7,16 +7,19 @@ import Image from "./Image";
 import ActionButton from "@/components/common/ActionButton";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 
+// 이미지 선택 결과 
 export interface ImageSelectionResult {
     src: string;
     altText: string;
 };
 
+// 갤러리 모달 기본 속성
 interface ModalProps {
     visible: boolean;
     onClose: () => void;
 };
 
+// 갤러리 모달 속성
 interface Props extends ModalProps {
     images: { src: string }[];
     uploading?: boolean;
@@ -36,8 +39,10 @@ export default function GalleryModal({
     // 선택된 이미지
     const [selectedImage, setSelectedImage] = useState("");
 
+    // 이미지 alt 텍스트
     const [altText, setAltText] = useState("");
 
+    // 이미지 파일이 선택 되었을 때 호출 함수
     const handleOnImageChange: ChangeEventHandler<HTMLInputElement> = (e) => {
         const { files } = e.target
         if (!files) {
@@ -49,17 +54,25 @@ export default function GalleryModal({
             return onClose && onClose();
         }
 
+        // 부모 컴포넌트에 파일 전달
         onFileSelect(file);
     }
 
+    // 이미지 파일을 선택하고 alt 텍스트 작성 완료 후 모달 닫는 함수
     const handleSubmit = () => {
+
+        // 선택된 이미지 없으면 모달 닫기
         if(!selectedImage) {
             return onClose && onClose();
         }
+
+        // 선택된 이미지와 alt 텍스트를 부모 컴포넌트에 전달
         onSelect({ 
             src: selectedImage,
             altText,
         });
+
+        // 모달 닫기
         onClose && onClose();
     }
 

@@ -16,25 +16,37 @@ import axios from "axios";
 export default function Editor() {
     // 선택된 텍스트 범위
     const [selectionRange, setSelectionRange] = useState<Range>();
+    // 갤러리 모달 표시
     const [showGallery, setShowGallery] = useState(false);
+    // 업로드 상태
     const [uploading, setUploading] = useState(false);
+    // 이미지 목록 
     const [images, setImages] = useState<{ src: string }[]>([]);
 
-    // cloudinary에서 이미지 불러오기
+    //** cloudinary에서 이미지 불러오기
     const fetchImages = async () => {
         const { data } = await axios('/api/image');
         setImages(data.images);
     };
 
+    //** 이미지 업로드 처리
     const handleImageUpload = async (image: File) => {
         setUploading(true);
+        
         const formData = new FormData();
+        
+        // formData에 업로드할 파일 추가
         formData.append('image', image);
+        // formData 객체 포함해 post 요청 보내기
         const { data } = await axios.post('/api/image', formData);
+
         setUploading(false);
         
+        // 업로드된 이미지를 기존 이미지 목록에 추가
         setImages([
+            // 업로드된 이미지
             data,
+            // 기존 이미지 목록
             ...images,
         ]);
     };
@@ -42,6 +54,7 @@ export default function Editor() {
     // 이미지 선택 처리 함수
     const handleImageSelection = (file: { src: string; altText: string }) => {
         if (editor) {
+            // 에디터에 이미지 삽입
             editor.chain().focus().setImage({ 
                 src: file.src, 
                 alt: file.altText 
@@ -82,7 +95,8 @@ export default function Editor() {
             Image, // Image 확장 추가
         ],
 
-        // 에디터 스타일, 레이아웃 지정 -> 텍스트 키우기, 다크모드 지원, 전체 너비/높이 사용
+
+
         editorProps: {
             // 에디터 내부에서 마우스 클릭 이벤트 발생 시 실행 함수
             handleClick(view, pos, event) {
@@ -93,22 +107,29 @@ export default function Editor() {
                 if (selectionRange) {
                     setSelectionRange(selectionRange);
                 }
-            }, 
+            },
+            // 에디터 css -> 최대 너비를 전체 너비로, 수평 중앙 배치..
             attributes: {
                 class: 'prose prose-lg focus:outline-none dark:prose-invert max-w-full mx-auto h-full'
             }
         },
     });
 
+    // url을 특정 텍스트에 삽입한 후에도 텍스트 범위를 잃지않고 유지
     useEffect(() => {
         if (editor && selectionRange) {
             editor.commands.setTextSelection(selectionRange);
         }
     }, [editor, selectionRange]);
 
+
+    // 갤러리 모달 열면 이미지 불러오기
     useEffect(() => {
-        fetchImages();
-    }, []);
+        if (showGallery) {
+            fetchImages();
+        }
+    }, [showGallery]);
+
 
     return (
         <>
