@@ -166,7 +166,11 @@ export default function Editor() {
                 <div className="h-[1px] w-full bg-secondary-dark dark:bg-secondary-light my-3" />
 
                 {/* SEO */}
-                <SEOForm />
+                <SEOForm 
+                    onChange={(result) => {
+                        console.log(result)
+                    }}
+                />
             </div>
 
             <GalleryModal 

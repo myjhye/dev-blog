@@ -1,9 +1,24 @@
 // SEO Section
 
-import { ChangeEventHandler, FC, useState } from "react"
+import { ChangeEventHandler, FC, useEffect, useState } from "react"
+import slugify from "slugify";
 
-export default function SEOForm() {
+export interface SeoResult {
+    meta: string;
+    slug: string;
+    tags: string;
+};
 
+interface Props {
+    title?: string;
+    // SeoResult 타입을 인자로 받는 onChange 함수
+    onChange(result: SeoResult): void;
+};
+
+export default function SEOForm({ 
+    title = "",
+    onChange, 
+}: Props) {
     // 메타설명, 슬러그, 태그
     const [values, setValues] = useState({
         meta: '',
@@ -20,12 +35,26 @@ export default function SEOForm() {
             value = value.substring(0, 150)
         }
 
-        // 자른 meata 값으로 업데이트
-        setValues({
+        const newValues = {
             ...values,
-            [name]: value
-        });
+            [name]: value,
+        };
+
+        setValues(newValues);
+        // 변경된 값 부모 컴포넌트에 전달
+        onChange(newValues);
     };
+
+    useEffect(() => {
+        const slug = slugify(title.toLocaleLowerCase())
+        const newValues = {
+            ...values,
+            slug
+        };
+        setValues(newValues);
+        // 변경된 값 부모 컴포넌트에 전달
+        onChange(newValues);
+    }, [title]);
 
     return (
         <div className="space-y-4">
