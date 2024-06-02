@@ -157,7 +157,13 @@ export default function Editor() {
                 }
 
                 {/* 본문 */}
-                <EditorContent editor={editor} />
+                <EditorContent 
+                    editor={editor}
+                    className="min-h-[300px]" 
+                />
+
+                {/* 구분선 */}
+                <div className="h-[1px] w-full bg-secondary-dark dark:bg-secondary-light my-3" />
 
                 {/* SEO */}
                 <SEOForm />

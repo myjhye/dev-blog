@@ -17,14 +17,18 @@ export default function SEOForm() {
                 placeholder="React, Next JS"
                 label="Tags: "
             />
-
-            <textarea 
-                className="w-full bg-transparent outline-none border-2
-                border-secondary-dark focus:border-primary-dark
-                focus:dark:border-primary rounded transition text-primary-dark 
-                dark:text-primary text-lg h-20 resize-none p-2 box-border"
-                placeholder="Meta description"
-            />
+            <div className="relative">
+                <textarea 
+                    className="w-full bg-transparent outline-none border-2
+                    border-secondary-dark focus:border-primary-dark
+                    focus:dark:border-primary rounded transition text-primary-dark 
+                    dark:text-primary text-lg h-20 resize-none p-2 box-border"
+                    placeholder="Meta description 150 characters will be fine"
+                />
+                <p className="absolute bottom-3 right-3 text-primary-dark dark:text-primary text-sm">
+                    0/150
+                </p>
+            </div>
         </div>
     )
 };
