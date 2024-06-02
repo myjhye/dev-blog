@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import EditLink from "./Link/EditLink";
 import GalleryModal from "./GalleryModal";
 import axios from "axios";
+import SEOForm from "./SeoForm";
 
 export default function Editor() {
     // 선택된 텍스트 범위
@@ -157,6 +158,9 @@ export default function Editor() {
 
                 {/* 본문 */}
                 <EditorContent editor={editor} />
+
+                {/* SEO */}
+                <SEOForm />
             </div>
 
             <GalleryModal 
