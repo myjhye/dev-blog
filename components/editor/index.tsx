@@ -13,6 +13,8 @@ import EditLink from "./Link/EditLink";
 import GalleryModal from "./GalleryModal";
 import axios from "axios";
 import SEOForm from "./SeoForm";
+import ActionButton from "../common/ActionButton";
+import ThumbnailSelector from "./ThumbnailSelector";
 
 export default function Editor() {
     // 선택된 텍스트 범위
@@ -131,24 +133,43 @@ export default function Editor() {
         }
     }, [showGallery]);
 
+    const handleFileChange = (file: File) => {
+        console.log(file);
+    };
+
 
     return (
         <>
             <div className="p-3 dark:bg-primary-dark bg-primary transition">
-                <input 
-                    type="text" 
-                    className="py-2 outline-none bg-transparent w-full border-0 border-b-[1px] border-secondary-dark dark:border-secondary-light text-3xl font-semibold italic text-primary-dark dark:text-primary mb-3" 
-                    placeholder="Title"
-                />
 
-                {/* 툴바 */}
-                <ToolBar 
-                    editor={editor}
-                    onOpenImageClick={() => setShowGallery(true)} 
-                />
+                <div className="sticky top-0 z-10 dark:bg-priary-dark bg-primary">
+                    {/* 썸네일 선택 & 제출 버튼 */}
+                    <div className="flex items-center justify-between mb-3">
+                        <ThumbnailSelector handleChange={handleFileChange} />
+                        <div className="inline-block">
+                            <ActionButton 
+                                title="Submit"
+                            />
+                        </div>
+                    </div>
 
-                {/* 구분선 */}
-                <div className="h-[1px] w-full bg-secondary-dark dark:bg-secondary-light my-3" />
+                    <input 
+                        type="text" 
+                        className="py-2 outline-none bg-transparent w-full border-0 border-b-[1px] border-secondary-dark dark:border-secondary-light text-3xl font-semibold italic text-primary-dark dark:text-primary mb-3" 
+                        placeholder="Title"
+                    />
+
+                    {/* 툴바 */}
+                    <ToolBar 
+                        editor={editor}
+                        onOpenImageClick={() => setShowGallery(true)} 
+                    />
+
+                    {/* 구분선 */}
+                    <div className="h-[1px] w-full bg-secondary-dark dark:bg-secondary-light my-3" />
+                </div>
+
+                
 
                 {/* 링크 편집 버튼 3개 - 링크 열기, 링크 편집, 링크 제거 */}
                 {editor 
