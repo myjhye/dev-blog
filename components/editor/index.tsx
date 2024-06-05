@@ -14,6 +14,7 @@ import SEOForm, { SeoResult } from "./SeoForm";
 import ActionButton from "../common/ActionButton";
 import ThumbnailSelector from "./ThumbnailSelector";
 
+// 게시물 최종 형태
 interface FinalPost extends SeoResult {
     title: string;
     content: string;
@@ -34,6 +35,7 @@ export default function Editor({ onSubmit }: Props) {
     // cloudinary 이미지 목록 
     const [images, setImages] = useState<{ src: string }[]>([]);
 
+    // 게시물
     const [post, setPost] = useState<FinalPost>({
         title: "",
         content: "",
@@ -81,6 +83,8 @@ export default function Editor({ onSubmit }: Props) {
         }
     };
 
+
+    // 게시물 제출
     const handleSubmit = () => {
         if (!editor) {
             return
@@ -88,6 +92,7 @@ export default function Editor({ onSubmit }: Props) {
 
         onSubmit({
             ...post,
+            // 에디터의 내용을 HTML로 가져와서 게시물에 저장
             content: editor.getHTML()
         });
     };
@@ -112,6 +117,7 @@ export default function Editor({ onSubmit }: Props) {
             Placeholder.configure({ 
                 placeholder: "Type something",
             }),
+            // 유튜브 비디오 스타일 설정
             Youtube.configure({
                 width: 840,
                 height: 472.5,
@@ -119,7 +125,8 @@ export default function Editor({ onSubmit }: Props) {
                     class: "mx-auto rounded",
                 }
             }),
-            Image, // Image 확장 추가
+            // Image 본문 추가
+            Image, 
         ],
 
         editorProps: {
@@ -140,6 +147,7 @@ export default function Editor({ onSubmit }: Props) {
         },
     });
 
+    // 제목 업데이트
     const updateTitle: ChangeEventHandler<HTMLInputElement> = ({ target }) => {
         setPost({
             ...post,
@@ -147,6 +155,7 @@ export default function Editor({ onSubmit }: Props) {
         })
     }
 
+    // SEO 업데이트
     const updateSeoValue = (result: SeoResult) => {
         setPost({
             ...post,
@@ -154,6 +163,7 @@ export default function Editor({ onSubmit }: Props) {
         })
     }
 
+    // 썸네일 업데이트
     const updateThumbnail = (file: File) => {
         setPost({
             ...post,
@@ -174,10 +184,6 @@ export default function Editor({ onSubmit }: Props) {
             fetchImages();
         }
     }, [showGallery]);
-
-    const handleFileChange = (file: File) => {
-        console.log(file);
-    };
 
     return (
         <>
