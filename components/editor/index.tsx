@@ -1,5 +1,3 @@
-// 에디터 전체 (최상위)
-
 import { EditorContent, useEditor, getMarkRange, Range } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import ToolBar from "./ToolBar";
@@ -8,23 +6,41 @@ import Placeholder from "@tiptap/extension-placeholder";
 import Link from "@tiptap/extension-link";
 import Youtube from "@tiptap/extension-youtube";
 import Image from "@tiptap/extension-image"; // Image 확장 추가
-import { useEffect, useState } from "react";
+import { ChangeEventHandler, useEffect, useState } from "react";
 import EditLink from "./Link/EditLink";
 import GalleryModal from "./GalleryModal";
 import axios from "axios";
-import SEOForm from "./SeoForm";
+import SEOForm, { SeoResult } from "./SeoForm";
 import ActionButton from "../common/ActionButton";
 import ThumbnailSelector from "./ThumbnailSelector";
 
-export default function Editor() {
+interface FinalPost extends SeoResult {
+    title: string;
+    content: string;
+    thumbnail?: File | string;
+};
+
+interface Props {
+    onSubmit(post: FinalPost): void
+}
+
+export default function Editor({ onSubmit }: Props) {
     // 선택된 텍스트 범위
     const [selectionRange, setSelectionRange] = useState<Range>();
     // 갤러리 모달 표시
     const [showGallery, setShowGallery] = useState(false);
-    // 업로드 상태
+    // cloudinary 이미지 업로드 상태
     const [uploading, setUploading] = useState(false);
-    // 이미지 목록 
+    // cloudinary 이미지 목록 
     const [images, setImages] = useState<{ src: string }[]>([]);
+
+    const [post, setPost] = useState<FinalPost>({
+        title: "",
+        content: "",
+        meta: "",
+        tags: "",
+        slug: "",
+    });
 
     //** cloudinary에서 이미지 불러오기
     const fetchImages = async () => {
@@ -65,8 +81,16 @@ export default function Editor() {
         }
     };
 
-     
+    const handleSubmit = () => {
+        if (!editor) {
+            return
+        }
 
+        onSubmit({
+            ...post,
+            content: editor.getHTML()
+        });
+    };
 
     // 에디터 인스턴스
     const editor = useEditor({
@@ -98,8 +122,6 @@ export default function Editor() {
             Image, // Image 확장 추가
         ],
 
-
-
         editorProps: {
             // 에디터 내부에서 마우스 클릭 이벤트 발생 시 실행 함수
             handleClick(view, pos, event) {
@@ -118,13 +140,33 @@ export default function Editor() {
         },
     });
 
+    const updateTitle: ChangeEventHandler<HTMLInputElement> = ({ target }) => {
+        setPost({
+            ...post,
+            title: target.value,
+        })
+    }
+
+    const updateSeoValue = (result: SeoResult) => {
+        setPost({
+            ...post,
+            ...result,
+        })
+    }
+
+    const updateThumbnail = (file: File) => {
+        setPost({
+            ...post,
+            thumbnail: file,
+        })
+    }
+
     // url을 특정 텍스트에 삽입한 후에도 텍스트 범위를 잃지않고 유지
     useEffect(() => {
         if (editor && selectionRange) {
             editor.commands.setTextSelection(selectionRange);
         }
     }, [editor, selectionRange]);
-
 
     // 갤러리 모달 열면 이미지 불러오기
     useEffect(() => {
@@ -137,26 +179,29 @@ export default function Editor() {
         console.log(file);
     };
 
-
     return (
         <>
             <div className="p-3 dark:bg-primary-dark bg-primary transition">
-
                 <div className="sticky top-0 z-10 dark:bg-priary-dark bg-primary">
                     {/* 썸네일 선택 & 제출 버튼 */}
                     <div className="flex items-center justify-between mb-3">
-                        <ThumbnailSelector handleChange={handleFileChange} />
+                        <ThumbnailSelector 
+                            handleChange={updateThumbnail} 
+                        />
                         <div className="inline-block">
                             <ActionButton 
                                 title="Submit"
+                                onClick={handleSubmit}
                             />
                         </div>
                     </div>
 
+                    {/* 제목 입력 칸 */}
                     <input 
                         type="text" 
                         className="py-2 outline-none bg-transparent w-full border-0 border-b-[1px] border-secondary-dark dark:border-secondary-light text-3xl font-semibold italic text-primary-dark dark:text-primary mb-3" 
                         placeholder="Title"
+                        onChange={updateTitle}
                     />
 
                     {/* 툴바 */}
@@ -168,8 +213,6 @@ export default function Editor() {
                     {/* 구분선 */}
                     <div className="h-[1px] w-full bg-secondary-dark dark:bg-secondary-light my-3" />
                 </div>
-
-                
 
                 {/* 링크 편집 버튼 3개 - 링크 열기, 링크 편집, 링크 제거 */}
                 {editor 
@@ -188,9 +231,8 @@ export default function Editor() {
 
                 {/* SEO */}
                 <SEOForm 
-                    onChange={(result) => {
-                        console.log(result)
-                    }}
+                    onChange={updateSeoValue}
+                    title={post.title}
                 />
             </div>
 
