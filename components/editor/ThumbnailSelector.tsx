@@ -1,4 +1,4 @@
-import { ChangeEventHandler, FC, useState } from "react";
+import { ChangeEventHandler, FC, useEffect, useState } from "react";
 
 interface Props {
     // 초기 썸네일 URL
@@ -11,6 +11,13 @@ export default function ThumbnailSelector({ initialValue, handleChange }: Props)
 
     // 썸네일
     const [selectThumbnail, setSelectedThumbnail] = useState<string>(initialValue || '');
+
+    useEffect(() => {
+        if (initialValue) {
+            setSelectedThumbnail(initialValue);
+        }
+    }, [initialValue]);
+
 
     // 파일 입력 변경 처리 함수
     const handleFileChange: ChangeEventHandler<HTMLInputElement> = ({ target }) => {

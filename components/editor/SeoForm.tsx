@@ -10,12 +10,14 @@ export interface SeoResult {
 };
 
 interface Props {
+    initialValue?: SeoResult;
     title?: string;
     // SeoResult 타입을 인자로 받는 onChange 함수
     onChange(result: SeoResult): void;
 };
 
-export default function SEOForm({ 
+export default function SEOForm({
+    initialValue,
     title = "",
     onChange, 
 }: Props) {
@@ -55,6 +57,15 @@ export default function SEOForm({
         // 변경된 값 부모 컴포넌트에 전달
         onChange(newValues);
     }, [title]);
+
+    useEffect(() => {
+        if (initialValue) {
+            setValues({ 
+                ...initialValue,
+                slug: slugify(initialValue.slug) 
+            })
+        }
+    }, [initialValue]);
 
     return (
         <div className="space-y-4">

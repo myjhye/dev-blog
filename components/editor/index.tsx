@@ -1,3 +1,5 @@
+// 에디터 전체 (최상위)
+
 import { EditorContent, useEditor, getMarkRange, Range } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import ToolBar from "./ToolBar";
@@ -15,17 +17,25 @@ import ActionButton from "../common/ActionButton";
 import ThumbnailSelector from "./ThumbnailSelector";
 
 // 게시물 최종 형태
-interface FinalPost extends SeoResult {
+export interface FinalPost extends SeoResult {
     title: string;
     content: string;
     thumbnail?: File | string;
 };
 
 interface Props {
+    initialValue?: FinalPost
+    btnTitle?: string
+    busy?: boolean
     onSubmit(post: FinalPost): void
 }
 
-export default function Editor({ onSubmit }: Props) {
+export default function Editor({ 
+    initialValue, 
+    btnTitle = "Submit", 
+    busy = false, 
+    onSubmit 
+}: Props) {
     // 선택된 텍스트 범위
     const [selectionRange, setSelectionRange] = useState<Range>();
     // 갤러리 모달 표시
@@ -35,6 +45,8 @@ export default function Editor({ onSubmit }: Props) {
     // cloudinary 이미지 목록 
     const [images, setImages] = useState<{ src: string }[]>([]);
 
+    const [seoInitialValue, setSeoInitialValue] = useState<SeoResult>();
+
     // 게시물
     const [post, setPost] = useState<FinalPost>({
         title: "",
@@ -42,6 +54,7 @@ export default function Editor({ onSubmit }: Props) {
         meta: "",
         tags: "",
         slug: "",
+        thumbnail: "",
     });
 
     //** cloudinary에서 이미지 불러오기
@@ -185,6 +198,29 @@ export default function Editor({ onSubmit }: Props) {
         }
     }, [showGallery]);
 
+    useEffect(() => {
+        if (initialValue) {
+            setPost({
+                ...initialValue
+            });
+            editor?.commands.setContent(initialValue.content);
+
+            const { meta, slug, tags, thumbnail } = initialValue;
+
+            setSeoInitialValue({
+                meta,
+                slug,
+                tags,
+            });
+
+            console.log("Setting post thumbnail:", thumbnail);
+            setPost((prev) => ({
+                ...prev,
+                thumbnail,
+            }));
+        }
+    }, [initialValue, editor]);
+
     return (
         <>
             <div className="p-3 dark:bg-primary-dark bg-primary transition">
@@ -193,10 +229,12 @@ export default function Editor({ onSubmit }: Props) {
                     <div className="flex items-center justify-between mb-3">
                         <ThumbnailSelector 
                             handleChange={updateThumbnail} 
+                            initialValue={post.thumbnail as string}
                         />
                         <div className="inline-block">
                             <ActionButton 
-                                title="Submit"
+                                busy={busy}
+                                title={btnTitle}
                                 onClick={handleSubmit}
                             />
                         </div>
@@ -208,6 +246,7 @@ export default function Editor({ onSubmit }: Props) {
                         className="py-2 outline-none bg-transparent w-full border-0 border-b-[1px] border-secondary-dark dark:border-secondary-light text-3xl font-semibold italic text-primary-dark dark:text-primary mb-3" 
                         placeholder="Title"
                         onChange={updateTitle}
+                        value={post.title}
                     />
 
                     {/* 툴바 */}
@@ -239,6 +278,7 @@ export default function Editor({ onSubmit }: Props) {
                 <SEOForm 
                     onChange={updateSeoValue}
                     title={post.title}
+                    initialValue={seoInitialValue}
                 />
             </div>
 
