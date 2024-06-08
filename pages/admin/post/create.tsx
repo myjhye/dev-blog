@@ -1,21 +1,17 @@
 import Editor from "@/components/editor";
+import AppHead from "@/components/common/AppHead";
 
 export default function Create() {
     return (
-        <div className="max-w-4xl mx-auto">
-            <Editor 
-                onSubmit={(post) => {
-                    console.log(post)
-                }}
-                initialValue={{
-                    title: "This is from create",
-                    meta: "Little meta description",
-                    content: "<h1>I am header</h1>",
-                    slug: "this-is-from-create",
-                    tags: "javascript",
-                    thumbnail: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzcP9jydrP4-aSdHPiDvfS5r2agDYZii-E-g&s"
-                }}
-            />
-        </div>
-    )
+        <>
+            <AppHead title="New Post" />
+            <div className="max-w-4xl mx-auto p-4">
+                <Editor 
+                    onSubmit={(post) => {
+                        console.log(post);
+                    }}
+                />
+            </div>
+        </>
+    );
 }
