@@ -21,6 +21,7 @@ export default function SEOForm({
     title = "",
     onChange, 
 }: Props) {
+
     // 메타설명, 슬러그, 태그
     const [values, setValues] = useState({
         meta: '',
@@ -61,9 +62,8 @@ export default function SEOForm({
     useEffect(() => {
         if (initialValue) {
             setValues({ 
-                ...initialValue,
-                slug: slugify(initialValue.slug) 
-            })
+                ...initialValue
+            });
         }
     }, [initialValue]);
 

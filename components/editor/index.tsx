@@ -198,26 +198,26 @@ export default function Editor({
         }
     }, [showGallery]);
 
+
+
+    // 초기 값 설정
     useEffect(() => {
         if (initialValue) {
+            // 초기 값을 post 상태에 설정
             setPost({
                 ...initialValue
             });
+            // 에디터 내용을 초기 값으로 설정
             editor?.commands.setContent(initialValue.content);
 
-            const { meta, slug, tags, thumbnail } = initialValue;
+            const { meta, slug, tags } = initialValue;
 
+            // SEOForm에서 관리 - meta, slug, tags
             setSeoInitialValue({
                 meta,
                 slug,
                 tags,
             });
-
-            console.log("Setting post thumbnail:", thumbnail);
-            setPost((prev) => ({
-                ...prev,
-                thumbnail,
-            }));
         }
     }, [initialValue, editor]);
 
